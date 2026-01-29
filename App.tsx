@@ -20,6 +20,8 @@ const App: React.FC = () => {
     // State for manual calibration offsets
     const [offsetX, setOffsetX] = useState<number>(0); 
     const [offsetY, setOffsetY] = useState<number>(0); 
+    // State for vertical pitch accumulation fix
+    const [customGapY, setCustomGapY] = useState<number>(0);
 
     const [error, setError] = useState<string>('');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -53,10 +55,13 @@ const App: React.FC = () => {
 
         return {
             ...baseLayout,
+            // Apply layout shift
             marginLeft: baseLayout.marginLeft + internalBaseX + offsetX,
             marginTop: baseLayout.marginTop + internalBaseY + offsetY,
+            // Apply cumulative pitch correction
+            gapY: baseLayout.gapY + customGapY,
         };
-    }, [labelType, offsetX, offsetY]);
+    }, [labelType, offsetX, offsetY, customGapY]);
 
     const skippedIndices = useMemo(() => {
         return labelType === LabelType.Small ? SMALL_LABEL_SKIPPED_INDICES : LARGE_LABEL_SKIPPED_INDICES;
@@ -127,6 +132,12 @@ const App: React.FC = () => {
         } finally {
             setIsGenerating(false);
         }
+    };
+
+    const resetCalibration = () => {
+        setOffsetX(0);
+        setOffsetY(0);
+        setCustomGapY(0);
     };
 
     return (
@@ -200,41 +211,65 @@ const App: React.FC = () => {
                                 {/* Calibration Settings */}
                                 <div className="bg-slate-50 p-3 rounded border border-slate-200">
                                     <div className="flex items-center justify-between mb-2">
-                                        <label className="block text-xs font-semibold text-slate-700">Hiệu chỉnh lề in thủ công (mm)</label>
-                                        {(offsetX !== 0 || offsetY !== 0) && (
+                                        <label className="block text-xs font-semibold text-slate-700">Hiệu chỉnh sai số máy in (mm)</label>
+                                        {(offsetX !== 0 || offsetY !== 0 || customGapY !== 0) && (
                                             <button 
-                                                onClick={() => { setOffsetX(0); setOffsetY(0); }}
+                                                onClick={resetCalibration}
                                                 className="text-[10px] text-blue-600 hover:underline font-medium"
                                             >
-                                                Đặt lại mặc định (0)
+                                                Đặt lại mặc định
                                             </button>
                                         )}
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    
+                                    <div className="grid grid-cols-2 gap-4 mb-3">
                                         <div>
-                                            <span className="text-[10px] text-slate-500 block mb-1">Dịch ngang (Lề trái X)</span>
+                                            <span className="text-[10px] text-slate-500 block mb-1" title="Dời toàn bộ trang in sang trái/phải">Dịch Lề Trái (X)</span>
                                             <div className="relative">
                                                 <input
                                                     type="number"
                                                     step="0.5"
                                                     value={offsetX}
                                                     onChange={(e) => setOffsetX(parseFloat(e.target.value) || 0)}
-                                                    className="w-full pl-3 pr-2 py-1.5 bg-white text-black border border-slate-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-right"
+                                                    className="w-full pl-6 pr-2 py-1.5 bg-white text-black border border-slate-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-right"
                                                 />
                                                 <span className="absolute left-2 top-1.5 text-slate-400 text-xs font-medium">X:</span>
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="text-[10px] text-slate-500 block mb-1">Dịch dọc (Lề trên Y)</span>
+                                            <span className="text-[10px] text-slate-500 block mb-1" title="Dời toàn bộ trang in lên/xuống">Dịch Lề Trên (Y)</span>
                                             <div className="relative">
                                                 <input
                                                     type="number"
                                                     step="0.5"
                                                     value={offsetY}
                                                     onChange={(e) => setOffsetY(parseFloat(e.target.value) || 0)}
-                                                    className="w-full pl-3 pr-2 py-1.5 bg-white text-black border border-slate-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-right"
+                                                    className="w-full pl-6 pr-2 py-1.5 bg-white text-black border border-slate-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-right"
                                                 />
                                                 <span className="absolute left-2 top-1.5 text-slate-400 text-xs font-medium">Y:</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Accumulation Fix */}
+                                    <div className="pt-2 border-t border-slate-200">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-[10px] font-semibold text-slate-600">Giãn cách dòng tích lũy</span>
+                                            <span className="text-[9px] text-slate-400 bg-slate-100 px-1 rounded">Sửa lỗi lệch dần</span>
+                                        </div>
+                                        <div className="relative">
+                                             <input
+                                                type="number"
+                                                step="0.1"
+                                                value={customGapY}
+                                                onChange={(e) => setCustomGapY(parseFloat(e.target.value) || 0)}
+                                                className="w-full pl-8 pr-2 py-1.5 bg-white text-black border border-slate-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-right"
+                                            />
+                                            <span className="absolute left-2 top-1.5 text-slate-400 text-xs font-medium">Gap:</span>
+                                            <div className="mt-1 text-[10px] text-slate-500 leading-tight">
+                                                * Nếu tem bên dưới bị <b>in xích lên trên</b>: Tăng số này (ví dụ: 0.1, 0.2).
+                                                <br/>
+                                                * Nếu tem bên dưới bị <b>in tụt xuống dưới</b>: Giảm số này (ví dụ: -0.1).
                                             </div>
                                         </div>
                                     </div>
