@@ -1,0 +1,5 @@
+{
+  "name": "Trình tạo tem hiệu chuẩn",
+  "description": "Một ứng dụng web chuyên dụng để tạo và in tem hiệu chuẩn cho các hệ thống công nghiệp. Hỗ trợ các kích thước tem và bố cục trang tùy chỉnh, với đầu ra PDF chính xác để đảm bảo chất lượng.",
+  "requestFramePermissions": []
+}
