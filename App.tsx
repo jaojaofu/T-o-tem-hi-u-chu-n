@@ -17,6 +17,9 @@ const App: React.FC = () => {
     const [labelsToPrint, setLabelsToPrint] = useState<LabelData[]>([]);
     const [startIndex, setStartIndex] = useState<number>(1);
     
+    // State to hold data for editing/copying to form
+    const [formInitialData, setFormInitialData] = useState<Omit<LabelData, 'id'> | null>(null);
+
     // State for manual calibration offsets
     const [offsetX, setOffsetX] = useState<number>(0); 
     const [offsetY, setOffsetY] = useState<number>(0); 
@@ -99,6 +102,24 @@ const App: React.FC = () => {
     const addLabel = (data: Omit<LabelData, 'id'>) => {
         const newLabel: LabelData = { ...data, id: Date.now() + Math.random() };
         setLabelsToPrint(prev => [...prev, newLabel]);
+        // Reset the "Edit" state so the form clears
+        setFormInitialData(null);
+    };
+
+    // Duplicate a label instantly (append to end)
+    const duplicateLabel = (label: LabelData) => {
+        const newLabel: LabelData = {
+            ...label,
+            id: Date.now() + Math.random()
+        };
+        setLabelsToPrint(prev => [...prev, newLabel]);
+    };
+
+    // Load label data into form for editing/copying
+    const loadDataToForm = (label: LabelData) => {
+        // We strip the ID because we want to create a NEW one based on this data
+        const { id, ...data } = label;
+        setFormInitialData(data);
     };
 
     const addLabelsFromExcel = (dataList: Omit<LabelData, 'id'>[]) => {
@@ -145,7 +166,6 @@ const App: React.FC = () => {
             {/* Top Header */}
             <header className="bg-white border-b border-slate-200 h-14 flex items-center px-6 shrink-0 z-20 shadow-sm justify-between">
                 <div className="flex items-center gap-2">
-                    {/* THAY ĐỔI: Sử dụng thẻ img thay vì div chữ J. Thay link src bên dưới bằng link ảnh của bạn */}
                     <img 
                         src="https://i.postimg.cc/prPrfBsY/luggage-tag-8632265.png" 
                         alt="Logo" 
@@ -286,7 +306,8 @@ const App: React.FC = () => {
                                 <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500 border-b pb-2">2. Nhập dữ liệu tem</h2>
                                 <div className="-mt-4">
                                     <ExcelImport onImport={addLabelsFromExcel} />
-                                    <LabelForm onSubmit={addLabel} />
+                                    {/* Pass the initialData from state to the form */}
+                                    <LabelForm onSubmit={addLabel} initialData={formInitialData} />
                                 </div>
                             </section>
 
@@ -321,15 +342,39 @@ const App: React.FC = () => {
                                                         <span>Hạn: {label.nextCalibrationDate}</span>
                                                     </div>
                                                 </div>
-                                                <button 
-                                                    onClick={() => removeLabel(label.id)}
-                                                    className="text-slate-400 hover:text-red-500 p-1 rounded hover:bg-red-50 transition"
-                                                    title="Xóa tem này"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
+                                                <div className="flex items-center gap-1">
+                                                    {/* Duplicate Button */}
+                                                    <button 
+                                                        onClick={() => duplicateLabel(label)}
+                                                        className="text-slate-400 hover:text-blue-600 p-1.5 rounded hover:bg-blue-50 transition"
+                                                        title="Nhân bản (In thêm 1 tem)"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                          <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                                                          <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+                                                        </svg>
+                                                    </button>
+                                                    {/* Copy to Form Button */}
+                                                    <button 
+                                                        onClick={() => loadDataToForm(label)}
+                                                        className="text-slate-400 hover:text-amber-600 p-1.5 rounded hover:bg-amber-50 transition"
+                                                        title="Chỉnh sửa / Copy lên Form"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                                        </svg>
+                                                    </button>
+                                                    {/* Delete Button */}
+                                                    <button 
+                                                        onClick={() => removeLabel(label.id)}
+                                                        className="text-slate-400 hover:text-red-500 p-1.5 rounded hover:bg-red-50 transition"
+                                                        title="Xóa tem này"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
