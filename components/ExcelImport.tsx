@@ -25,18 +25,12 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport }) => {
             const arrayBuffer = await file.arrayBuffer();
             const workbook = XLSX.read(arrayBuffer);
             
-            // Assume data is in the first sheet
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            
-            // Convert to JSON with headers
             const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet);
-
             const importedLabels: Omit<LabelData, 'id'>[] = [];
 
-            // Mapping logic: Try to find columns flexibly
             jsonData.forEach((row) => {
-                // Helper to find value case-insensitively
                 const findVal = (keys: string[]) => {
                     for (const k of Object.keys(row)) {
                         if (keys.some(key => k.toLowerCase().includes(key.toLowerCase()))) {
@@ -65,16 +59,15 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport }) => {
                 onImport(importedLabels);
                 alert(`Đã nhập thành công ${importedLabels.length} tem từ Excel.`);
             } else {
-                alert('Không tìm thấy dữ liệu hợp lệ. Vui lòng kiểm tra tên cột trong file Excel (Mã thiết bị, Tên thiết bị, Ngày hiệu chuẩn, Hạn hiệu chuẩn).');
+                alert('Không tìm thấy dữ liệu hợp lệ. Vui lòng kiểm tra tên cột trong file Excel.');
             }
-
         } catch (error) {
             console.error("Error reading excel:", error);
-            alert('Lỗi khi đọc file Excel. Vui lòng đảm bảo file không bị hỏng.');
+            alert('Lỗi khi đọc file Excel.');
         } finally {
             setIsLoading(false);
             if (fileInputRef.current) {
-                fileInputRef.current.value = ''; // Reset input
+                fileInputRef.current.value = '';
             }
         }
     };
@@ -91,8 +84,7 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport }) => {
             <button
                 onClick={handleButtonClick}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 bg-white border border-green-600 text-green-700 font-bold py-2 px-4 rounded-lg shadow-sm hover:bg-green-50 transition dashed-border"
-                style={{ borderStyle: 'dashed', borderWidth: '2px' }}
+                className="w-full flex items-center justify-center gap-2 bg-white border-2 border-slate-300 text-slate-700 font-black py-2.5 px-4 rounded-xl shadow-sm hover:bg-slate-50 transition border-dashed hover:border-blue-400 hover:text-blue-600"
             >
                 {isLoading ? (
                     <span>Đang xử lý...</span>
@@ -101,12 +93,12 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport }) => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
-                        Nhập danh sách từ Excel
+                        NHẬP TỪ EXCEL
                     </>
                 )}
             </button>
-            <div className="text-[10px] text-slate-400 mt-1 text-center">
-                * Hỗ trợ .xlsx, .xls. Cột: Mã thiết bị, Tên thiết bị, Ngày HC, Hạn HC
+            <div className="text-[10px] text-slate-400 mt-2 text-center font-bold italic">
+                * Cần cột: Mã thiết bị, Tên thiết bị, Ngày HC, Hạn HC
             </div>
         </div>
     );
