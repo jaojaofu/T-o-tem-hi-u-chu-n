@@ -147,7 +147,7 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-2">
                     {/* THAY ĐỔI: Sử dụng thẻ img thay vì div chữ J. Thay link src bên dưới bằng link ảnh của bạn */}
                     <img 
-                        src="https://cdn-icons-png.flaticon.com/512/2997/2997295.png" 
+                        src="https://i.postimg.cc/prPrfBsY/luggage-tag-8632265.png" 
                         alt="Logo" 
                         className="w-8 h-8 rounded-lg object-contain"
                     />
