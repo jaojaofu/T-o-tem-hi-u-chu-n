@@ -13,7 +13,7 @@ export const SMALL_LABEL_LAYOUT: SheetLayout = {
     sizeW: 16,
     sizeH: 22,
     gapX: 1.5, 
-    gapY: 2.9, 
+    gapY: 3.2, // Updated: 2.9 + 0.3 calibration
     marginTop: 3.5,
     marginRight: 2.5,
     marginBottom: 3.5,
@@ -42,7 +42,7 @@ export const LARGE_LABEL_LAYOUT: SheetLayout = {
     sizeW: 19,
     sizeH: 36,
     gapX: 0.5,
-    gapY: 2.5,
+    gapY: 3.1, // Updated: 2.5 + 0.6 calibration
     marginTop: 5,
     marginRight: 2.25,
     marginBottom: 5,
