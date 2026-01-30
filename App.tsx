@@ -10,6 +10,7 @@ import {
 import { LabelForm } from './components/LabelForm';
 import { LabelSheetPreview } from './components/LabelSheetPreview';
 import { ExcelImport } from './components/ExcelImport';
+// SỬA LỖI '@/': Đảm bảo dùng đường dẫn tương đối chuẩn xác
 import { generatePdf } from './services/pdfGenerator';
 
 const App: React.FC = () => {
@@ -18,14 +19,11 @@ const App: React.FC = () => {
     const [startIndex, setStartIndex] = useState<number>(1);
     const [activeInputTab, setActiveInputTab] = useState<'calibration' | 'generic'>('calibration');
     
-    // Generic text state
     const [genericContent, setGenericContent] = useState('');
     const [genericFontSize, setGenericFontSize] = useState(3.5);
 
-    // State to hold data for editing/copying to form
     const [formInitialData, setFormInitialData] = useState<Omit<LabelData, 'id'> | null>(null);
 
-    // State for manual calibration offsets
     const [offsetX, setOffsetX] = useState<number>(0); 
     const [offsetY, setOffsetY] = useState<number>(0); 
     const [customGapY, setCustomGapY] = useState<number>(0);
@@ -166,12 +164,10 @@ const App: React.FC = () => {
         }
     };
 
-    // Style constants: White bg, Black text, Gray placeholder
     const inputBaseClass = "w-full px-3 py-2 bg-white text-black border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-400 font-medium transition-all";
 
     return (
         <div className="h-screen flex flex-col bg-slate-100 text-slate-800 font-sans overflow-hidden">
-            {/* Header */}
             <header className="bg-white border-b border-slate-200 h-14 flex items-center px-6 shrink-0 z-20 shadow-sm justify-between">
                 <div className="flex items-center gap-2">
                     <img 
@@ -191,7 +187,7 @@ const App: React.FC = () => {
                             Cài đặt App
                         </button>
                     )}
-                    <div className="text-sm text-slate-500">v1.5 - Stable</div>
+                    <div className="text-sm text-slate-500">v1.7 - Stable UI</div>
                 </div>
             </header>
 
@@ -199,7 +195,6 @@ const App: React.FC = () => {
                 <aside className="w-[450px] bg-white border-r border-slate-200 flex flex-col z-10 shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
                     <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-300">
                         <div className="space-y-8">
-                            {/* Section 1: Page Config */}
                             <section className="space-y-4">
                                 <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500 border-b pb-2">1. Cấu hình trang in</h2>
                                 <div className="grid grid-cols-2 gap-4">
@@ -228,7 +223,6 @@ const App: React.FC = () => {
                                 </div>
                             </section>
 
-                            {/* Section 2: Nhập dữ liệu */}
                             <section className="space-y-4">
                                 <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500 border-b pb-2">2. Nhập dữ liệu</h2>
                                 
@@ -286,11 +280,44 @@ const App: React.FC = () => {
                                 )}
                             </section>
 
-                            {/* Section 3: Print List */}
+                            <section className="space-y-4">
+                                <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500 border-b pb-2">3. Hiệu chuẩn lề in (mm)</h2>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-1 uppercase">Lệch X</label>
+                                        <input 
+                                            type="number" step="0.1"
+                                            value={offsetX}
+                                            onChange={(e) => setOffsetX(parseFloat(e.target.value) || 0)}
+                                            className={inputBaseClass}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-1 uppercase">Lệch Y</label>
+                                        <input 
+                                            type="number" step="0.1"
+                                            value={offsetY}
+                                            onChange={(e) => setOffsetY(parseFloat(e.target.value) || 0)}
+                                            className={inputBaseClass}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-1 uppercase">Hàng dọc</label>
+                                        <input 
+                                            type="number" step="0.1"
+                                            value={customGapY}
+                                            onChange={(e) => setCustomGapY(parseFloat(e.target.value) || 0)}
+                                            className={inputBaseClass}
+                                        />
+                                    </div>
+                                </div>
+                                <p className="text-[10px] text-slate-400 italic font-medium">Lưu ý: Chỉ hiệu chỉnh nếu bản in thực tế bị lệch so với giấy decal.</p>
+                            </section>
+
                             {labelsToPrint.length > 0 && (
                                 <section className="space-y-3">
                                     <div className="flex justify-between items-end border-b pb-2">
-                                        <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500">3. Danh sách in</h2>
+                                        <h2 className="text-sm uppercase tracking-wider font-bold text-slate-500">4. Danh sách in</h2>
                                         <button onClick={clearAllLabels} className="text-xs text-red-600 font-medium hover:underline">Xóa hết ({labelsToPrint.length})</button>
                                     </div>
                                     <div className="space-y-2">

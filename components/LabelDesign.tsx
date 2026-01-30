@@ -79,22 +79,37 @@ export const LabelDesign: React.FC<LabelDesignProps> = ({ layout, data }) => {
     }
 
     if (layout.type === LabelType.Small) {
-        const fontSize = { header: 2.6, id: 2.7, name: 1.4, date: 2.1 };
+        // TINH CHỈNH BỐ CỤC TEM NHỎ ĐỂ CHỐNG CHỒNG CHỮ
+        // ID: 4.0mm, Tên: 1.2mm, Label & Date: 1.5mm (đồng bộ kích thước)
+        const fontSize = { header: 2.4, id: 4.0, name: 1.2, dateLabel: 1.5, date: 1.5 };
         const safeWidth = sizeW - 2.0;
         const nameLines = wrapText(data.deviceName || '', safeWidth, fontSize.name).slice(0, 3);
 
         return (
             <svg width={sizeW} height={sizeH} viewBox={`0 0 ${sizeW} ${sizeH}`} fontFamily="Arial, Helvetica, sans-serif">
                 <rect width={sizeW} height={sizeH} fill="white" />
-                <text x={sizeW / 2} y={3.2} textAnchor="middle" fontSize={fontSize.header} fontWeight="bold" fill="#000">JICV</text>
-                <line x1={2.5} y1={4.2} x2={sizeW - 2.5} y2={4.2} stroke="#000" strokeWidth="0.15" />
+                
+                {/* 1. Header & Divider */}
+                <text x={sizeW / 2} y={2.6} textAnchor="middle" fontSize={fontSize.header} fontWeight="bold" fill="#000">JICV</text>
+                <line x1={2.0} y1={3.4} x2={sizeW - 2.0} y2={3.4} stroke="#000" strokeWidth="0.15" />
+                
+                {/* 2. Device ID - AL 123 */}
                 <text x={sizeW / 2} y={7.2} textAnchor="middle" fontSize={fontSize.id} fontWeight="bold" fill="#000">{data.deviceId}</text>
+                
+                {/* 3. Device Name */}
                 {nameLines.map((line, i) => (
-                    <text key={i} x={sizeW / 2} y={9.8 + (i * 1.7)} textAnchor="middle" fontSize={fontSize.name} fill="#000">{line}</text>
+                    <text key={i} x={sizeW / 2} y={9.4 + (i * 1.4)} textAnchor="middle" fontSize={fontSize.name} fill="#000" fontWeight="bold">{line}</text>
                 ))}
-                <line x1={2.5} y1={sizeH - 6.0} x2={sizeW - 2.5} y2={sizeH - 6.0} stroke="#000" strokeWidth="0.15" opacity="0.5" />
-                <text x={sizeW / 2} y={sizeH - 3.6} textAnchor="middle" fontSize={fontSize.date} fontWeight="bold" fill="#000">{data.calibrationDate}</text>
-                <text x={sizeW / 2} y={sizeH - 1.2} textAnchor="middle" fontSize={fontSize.date} fontWeight="bold" fill="#000">{data.nextCalibrationDate}</text>
+                
+                {/* 4. Bottom Divider - Nâng cao lên 1 chút để tạo khoảng trống cho cụm ngày tháng */}
+                <line x1={2.5} y1={13.8} x2={sizeW - 2.5} y2={13.8} stroke="#000" strokeWidth="0.1" opacity="0.2" />
+                
+                {/* 5. Calibration Data - Tách rời hoàn toàn */}
+                <text x={sizeW / 2} y={15.5} textAnchor="middle" fontSize={fontSize.dateLabel} fill="#666">Hiệu chuẩn</text>
+                <text x={sizeW / 2} y={17.2} textAnchor="middle" fontSize={fontSize.date} fontWeight="bold" fill="#000">{data.calibrationDate}</text>
+                
+                <text x={sizeW / 2} y={19.3} textAnchor="middle" fontSize={fontSize.dateLabel} fill="#666">Tiếp theo</text>
+                <text x={sizeW / 2} y={21.0} textAnchor="middle" fontSize={fontSize.date} fontWeight="bold" fill="#000">{data.nextCalibrationDate}</text>
             </svg>
         );
     }

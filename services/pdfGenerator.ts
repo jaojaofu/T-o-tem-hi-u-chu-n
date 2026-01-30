@@ -95,29 +95,53 @@ const drawGenericLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, lay
 };
 
 const drawSmallLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, layout: SheetLayout) => {
-    const { sizeW, sizeH } = layout;
+    const { sizeW } = layout;
     const centerX = x + sizeW / 2;
-    const fontSize = { header: 2.6, id: 2.7, name: 1.4, date: 2.1 };
+    // ĐỒNG BỘ THÔNG SỐ VỚI LabelDesign.tsx
+    const fontSize = { header: 2.4, id: 4.0, name: 1.2, dateLabel: 1.5, date: 1.5 };
+    
     pdf.setTextColor(0, 0, 0);
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.header));
-    pdf.text('JICV', centerX, y + 3.2, { align: 'center' });
+    pdf.text('JICV', centerX, y + 2.6, { align: 'center' });
+    
     pdf.setLineWidth(0.15);
-    pdf.line(x + 2.5, y + 4.2, x + sizeW - 2.5, y + 4.2);
+    pdf.line(x + 2.0, y + 3.4, x + sizeW - 2.0, y + 3.4);
+    
     pdf.setFontSize(mmToPt(fontSize.id));
     pdf.text(data.deviceId || '', centerX, y + 7.2, { align: 'center' });
-    pdf.setFont('Roboto', 'normal');
+    
+    pdf.setFont('Roboto', 'bold'); // Tên thiết bị nên in đậm cho rõ
     pdf.setFontSize(mmToPt(fontSize.name));
     const nameLines = wrapTextPdf(data.deviceName || '', sizeW - 2.0, fontSize.name).slice(0, 3);
     nameLines.forEach((line, i) => {
-        pdf.text(line, centerX, y + 9.8 + (i * 1.7), { align: 'center' });
+        pdf.text(line, centerX, y + 9.4 + (i * 1.4), { align: 'center' });
     });
-    pdf.setLineWidth(0.15);
-    pdf.line(x + 2.5, y + sizeH - 6.0, x + sizeW - 2.5, y + sizeH - 6.0);
+    
+    pdf.setLineWidth(0.1);
+    pdf.setDrawColor(200, 200, 200);
+    pdf.line(x + 2.5, y + 13.8, x + sizeW - 2.5, y + 13.8);
+    pdf.setDrawColor(0, 0, 0);
+    
+    pdf.setTextColor(100, 100, 100);
+    pdf.setFont('Roboto', 'normal');
+    pdf.setFontSize(mmToPt(fontSize.dateLabel));
+    pdf.text('Hiệu chuẩn', centerX, y + 15.5, { align: 'center' });
+    
+    pdf.setTextColor(0, 0, 0);
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.date));
-    pdf.text(data.calibrationDate || '', centerX, y + sizeH - 3.6, { align: 'center' });
-    pdf.text(data.nextCalibrationDate || '', centerX, y + sizeH - 1.2, { align: 'center' });
+    pdf.text(data.calibrationDate || '', centerX, y + 17.2, { align: 'center' });
+    
+    pdf.setTextColor(100, 100, 100);
+    pdf.setFont('Roboto', 'normal');
+    pdf.setFontSize(mmToPt(fontSize.dateLabel));
+    pdf.text('Tiếp theo', centerX, y + 19.3, { align: 'center' });
+    
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFont('Roboto', 'bold');
+    pdf.setFontSize(mmToPt(fontSize.date));
+    pdf.text(data.nextCalibrationDate || '', centerX, y + 21.0, { align: 'center' });
 };
 
 const drawLargeLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, layout: SheetLayout) => {
