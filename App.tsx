@@ -53,12 +53,10 @@ const App: React.FC = () => {
 
     const currentLayout: SheetLayout = useMemo(() => {
         const baseLayout = labelType === LabelType.Small ? SMALL_LABEL_LAYOUT : LARGE_LABEL_LAYOUT;
-        const internalBaseX = labelType === LabelType.Small ? 0.3 : 0;
-        const internalBaseY = labelType === LabelType.Small ? -0.2 : 0;
         return {
             ...baseLayout,
-            marginLeft: baseLayout.marginLeft + internalBaseX + offsetX,
-            marginTop: baseLayout.marginTop + internalBaseY + offsetY,
+            marginLeft: baseLayout.marginLeft + offsetX,
+            marginTop: baseLayout.marginTop + offsetY,
             gapY: baseLayout.gapY + customGapY,
         };
     }, [labelType, offsetX, offsetY, customGapY]);

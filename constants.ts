@@ -14,10 +14,10 @@ export const SMALL_LABEL_LAYOUT: SheetLayout = {
     sizeH: 22,
     gapX: 1.5, 
     gapY: 3.2, // Updated: 2.9 + 0.3 calibration
-    marginTop: 3.5,
+    marginTop: 3.3, // Included internalBaseY: -0.2
     marginRight: 2.5,
     marginBottom: 3.5,
-    marginLeft: 1.5,
+    marginLeft: 1.8, // Included internalBaseX: 0.3
 };
 
 // Indices to skip for Small Labels (Left column, Right column, Bottom row)
@@ -41,12 +41,12 @@ export const LARGE_LABEL_LAYOUT: SheetLayout = {
     total: 40,
     sizeW: 19,
     sizeH: 36,
-    gapX: 0.5,
+    gapX: 1.0, // Increased from 0.5 to fix horizontal squeeze
     gapY: 3.1, // Updated: 2.5 + 0.6 calibration
-    marginTop: 5,
-    marginRight: 2.25,
-    marginBottom: 5,
-    marginLeft: 2.25,
+    marginTop: 4.8, // Shifted down by 1mm
+    marginRight: 0.5, // Decreased to compensate for larger gapX
+    marginBottom: 2.8, // Adjusted to ensure total height <= 200mm
+    marginLeft: 0.5, // Decreased to compensate for larger gapX
 };
 
 // Indices to skip for Large Labels (Left column, Right column, Bottom row)
