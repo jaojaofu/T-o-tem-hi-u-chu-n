@@ -96,82 +96,82 @@ const drawGenericLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, lay
 
 const drawSmallLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, layout: SheetLayout) => {
     const { sizeW } = layout;
-    const centerX = x + sizeW / 2;
+    const centerX = x + sizeW / 2 - 0.5;
     // Đồng bộ font size
-    const fontSize = { header: 2.2, id: 4.0, name: 1.1, dateLabel: 1.5, date: 2.2 };
+    const fontSize = { header: 3.0, id: 4.0, name: 1.1, dateLabel: 1.5, date: 2.2 };
     
     pdf.setTextColor(0, 0, 0);
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.header));
-    pdf.text('JICV', centerX, y + 2.4, { align: 'center' });
+    pdf.text('JICV', centerX, y + 4.5, { align: 'center' });
     
     pdf.setLineWidth(0.15);
-    pdf.line(x + 2.0, y + 3.2, x + sizeW - 2.0, y + 3.2);
+    pdf.line(x + 1.5, y + 5.5, x + sizeW - 2.5, y + 5.5);
     
     pdf.setFontSize(mmToPt(fontSize.id));
-    pdf.text(data.deviceId || '', centerX, y + 6.8, { align: 'center' });
+    pdf.text(data.deviceId || '', centerX, y + 8.8, { align: 'center' });
     
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.name));
     const nameLines = wrapTextPdf(data.deviceName || '', sizeW - 2.0, fontSize.name).slice(0, 2);
     nameLines.forEach((line, i) => {
-        pdf.text(line, centerX, y + 8.8 + (i * 1.3), { align: 'center' });
+        pdf.text(line, centerX, y + 10.8 + (i * 1.3), { align: 'center' });
     });
     
     pdf.setLineWidth(0.1);
     pdf.setDrawColor(200, 200, 200);
-    pdf.line(x + 2.5, y + 13.0, x + sizeW - 2.5, y + 13.0);
+    pdf.line(x + 2.0, y + 13.8, x + sizeW - 3.0, y + 13.8);
     pdf.setDrawColor(0, 0, 0);
     
-    // Tọa độ ngang: Label end tại 5.2, Date start tại 5.8 (so với lề trái tem)
-    const labelXAbs = x + 5.2;
-    const dateXAbs = x + 5.8;
+    // Tọa độ ngang: Label end tại 4.7, Date start tại 5.3 (so với lề trái tem)
+    const labelXAbs = x + 4.7;
+    const dateXAbs = x + 5.3;
 
     // Line 1: From ...
     pdf.setTextColor(100, 100, 100);
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.dateLabel));
-    pdf.text('From', labelXAbs, y + 15.8, { align: 'right' });
+    pdf.text('From', labelXAbs, y + 16.3, { align: 'right' });
     
     pdf.setTextColor(0, 0, 0);
     pdf.setFontSize(mmToPt(fontSize.date));
-    pdf.text(data.calibrationDate || '', dateXAbs, y + 15.8, { align: 'left' });
+    pdf.text(data.calibrationDate || '', dateXAbs, y + 16.3, { align: 'left' });
     
     // Line 2: To ...
     pdf.setTextColor(100, 100, 100);
     pdf.setFontSize(mmToPt(fontSize.dateLabel));
-    pdf.text('To', labelXAbs, y + 19.0, { align: 'right' });
+    pdf.text('To', labelXAbs, y + 18.8, { align: 'right' });
     
     pdf.setTextColor(0, 0, 0);
     pdf.setFontSize(mmToPt(fontSize.date));
-    pdf.text(data.nextCalibrationDate || '', dateXAbs, y + 19.0, { align: 'left' });
+    pdf.text(data.nextCalibrationDate || '', dateXAbs, y + 18.8, { align: 'left' });
 };
 
 const drawLargeLabel = (pdf: jsPDF, x: number, y: number, data: LabelData, layout: SheetLayout) => {
     const { sizeW, sizeH } = layout;
-    const centerX = x + sizeW / 2;
+    const centerX = x + sizeW / 2 - 0.2;
     // Đồng bộ font size
-    const fontSize = { header: 2.8, id: 3.8, name: 1.8, dateLabel: 1.8, date: 2.8 };
+    const fontSize = { header: 3.8, id: 3.8, name: 1.8, dateLabel: 1.8, date: 2.8 };
     
     pdf.setTextColor(0, 0, 0);
     pdf.setFont('Roboto', 'bold');
     pdf.setFontSize(mmToPt(fontSize.header));
-    pdf.text('JICV', centerX, y + 5.0, { align: 'center' });
+    pdf.text('JICV', centerX, y + 7.8, { align: 'center' });
     pdf.setLineWidth(0.2);
-    pdf.line(x + 3, y + 6.5, x + sizeW - 3, y + 6.5);
+    pdf.line(x + 2.8, y + 9.5, x + sizeW - 3.2, y + 9.5);
     pdf.setFontSize(mmToPt(fontSize.id));
-    pdf.text(data.deviceId || '', centerX, y + 10.5, { align: 'center' });
+    pdf.text(data.deviceId || '', centerX, y + 14.0, { align: 'center' });
     pdf.setFont('Roboto', 'normal');
     pdf.setFontSize(mmToPt(fontSize.name));
     const nameLines = wrapTextPdf(data.deviceName || '', sizeW - 3, fontSize.name).slice(0, 3);
     nameLines.forEach((line, i) => {
-        pdf.text(line, centerX, y + 14.5 + (i * 2.2), { align: 'center' });
+        pdf.text(line, centerX, y + 18.0 + (i * 2.2), { align: 'center' });
     });
     
-    const footerStartY = y + sizeH - 13;
-    // Tọa độ ngang: Label end tại 6.0, Date start tại 6.8
-    const labelXAbs = x + 6.0;
-    const dateXAbs = x + 6.8;
+    const footerStartY = y + sizeH - 14.5;
+    // Tọa độ ngang: Label end tại 5.8, Date start tại 6.6
+    const labelXAbs = x + 5.8;
+    const dateXAbs = x + 6.6;
 
     // Line 1
     pdf.setTextColor(80, 80, 80);

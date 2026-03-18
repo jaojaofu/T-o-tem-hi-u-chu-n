@@ -14,9 +14,9 @@ export const SMALL_LABEL_LAYOUT: SheetLayout = {
     sizeH: 22,
     gapX: 1.5, 
     gapY: 3.2, // Updated: 2.9 + 0.3 calibration
-    marginTop: 3.3, // Included internalBaseY: -0.2
+    marginTop: 5.3, // Shifted down by 2mm
     marginRight: 2.5,
-    marginBottom: 3.5,
+    marginBottom: 1.5, // Adjusted to keep total height constant
     marginLeft: 1.8, // Included internalBaseX: 0.3
 };
 
