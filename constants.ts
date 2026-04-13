@@ -1,23 +1,23 @@
 
 import { SheetLayout, LabelType } from './types';
 
-// Paper size: 160mm x 200mm
+// Paper size: 165mm x 200mm
 // Small Label: 16mm x 22mm (9 cols, 8 rows)
 export const SMALL_LABEL_LAYOUT: SheetLayout = {
     type: LabelType.Small,
-    paperWidth: 160,
+    paperWidth: 165,
     paperHeight: 200,
     cols: 9,
     rows: 8,
     total: 72,
     sizeW: 16,
     sizeH: 22,
-    gapX: 1.5, 
+    gapX: 2.0, 
     gapY: 3.2, // Updated: 2.9 + 0.3 calibration
     marginTop: 5.3, // Shifted down by 2mm
-    marginRight: 2.5,
+    marginRight: 3.0,
     marginBottom: 1.5, // Adjusted to keep total height constant
-    marginLeft: 1.8, // Included internalBaseX: 0.3
+    marginLeft: 2.0, 
 };
 
 // Indices to skip for Small Labels (Left column, Right column, Bottom row)
@@ -30,11 +30,11 @@ export const SMALL_LABEL_SKIPPED_INDICES = [
     65, 66, 67, 68, 69, 70, 71
 ];
 
-// Paper size: 160mm x 200mm
+// Paper size: 165mm x 200mm
 // Large Label: 19mm x 36mm (8 cols, 5 rows)
 export const LARGE_LABEL_LAYOUT: SheetLayout = {
     type: LabelType.Large,
-    paperWidth: 160,
+    paperWidth: 165,
     paperHeight: 200,
     cols: 8,
     rows: 5,
@@ -44,9 +44,9 @@ export const LARGE_LABEL_LAYOUT: SheetLayout = {
     gapX: 1.0, // Increased from 0.5 to fix horizontal squeeze
     gapY: 3.1, // Updated: 2.5 + 0.6 calibration
     marginTop: 4.8, // Shifted down by 1mm
-    marginRight: 0.5, // Decreased to compensate for larger gapX
+    marginRight: 3.0, // Adjusted based on user input (2mm + 1mm extra)
     marginBottom: 2.8, // Adjusted to ensure total height <= 200mm
-    marginLeft: 0.5, // Decreased to compensate for larger gapX
+    marginLeft: 3.0, // Adjusted based on user input (2mm + 1mm extra)
 };
 
 // Indices to skip for Large Labels (Left column, Right column, Bottom row)
